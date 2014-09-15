@@ -39,8 +39,8 @@ var Camera = {
         this.canvas = canvas;
         // this.gl = canvas.getContext("experimental­webgl");
         // Hook Events
-        //canvas.addEventListener('onkeydown', function(e) { Camera.isKeyPressed[e.keyCode] = true; });
-        //canvas.addEventListener('onkeyup', function(e) { Camera.isKeyPressed[e.keyCode] = false; });
+        document.onkeydown = function(event) { Camera.isKeyPressed[event.keyCode] = true; };
+        document.onkeyup = function(event) { Camera.isKeyPressed[event.keyCode] = false; };
         canvas.addEventListener('click', Camera.mouseClick, false);
         canvas.addEventListener("mousemove", Camera.mouseMove, false);
         document.addEventListener('pointerlockchange', Camera.mouseLockChange, false);

@@ -1,4 +1,13 @@
-
+function waitFor(checkCallback, callback){
+  function check(){
+    if(checkCallback()){
+      callback();
+    }else{
+      setTimeout(check, 10);
+    }
+  }
+  check();
+}
 
 function create(parent) {
   var F = function() {};
@@ -40,4 +49,12 @@ function makeFullClient(e){
     e.style.left = 0 + "px";
     e.width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     e.height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);    
+}
+
+
+function xhrGet(reqUri, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", reqUri, true);
+    xhr.onload = callback;
+    xhr.send();
 }

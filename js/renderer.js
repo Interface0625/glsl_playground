@@ -1,0 +1,8 @@
+
+Renderer = {
+
+	function SetShader(){
+
+	},
+
+}
