@@ -1,18 +1,62 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
+import sys
 import BaseHTTPServer
 import time
+import json
+import thread
 
+# sys.path.insert(0, '/mnt/data/Code/python/lkserv/src/tools')
+# import scanimage
+class test():
+	def scan(self):
+		time.sleep(30)
+		return ["scans/testImg.png", "scans/testImg.png", "scans/testImg.png"]
+
+scanimage = test()
+
+
+BUSY = False
+
+
+
+
+
+
+def performscan(idx):
+	global BUSY
+	images = scanimage.scan();
+	result = {"urls": []}
+	for i in images:
+		result["urls"] += [i]
+	open("ids/" + idx, "w").write(json.dumps(result))
+	BUSY = False
+
+def scan():
+	global BUSY
+	if BUSY: return "busy"
+	BUSY = True
+	idx = str(time.time())
+	#performscan(idx)
+	thread.start_new_thread(performscan, (idx,))
+	return idx
 
 class DevServer(BaseHTTPServer.BaseHTTPRequestHandler):
 	def scan(self):
-		return "firstScan";
+		return scan();
 
 	def getJSON(self, idx):
-		print("ids/"+idx)
+		print("Requested file: ids/"+idx)
 		fname = "ids/"+idx
 		if os.path.exists(fname): return open(fname).read()
 		else: return "{}"
+
+	def getLastScan(self):
+		pass
+
+	def getLast5(self):
+		pass
 
 	def do_GET(self): self.wfile.write(self.do_get())
 
@@ -29,6 +73,8 @@ class DevServer(BaseHTTPServer.BaseHTTPRequestHandler):
 		elif path == "web_document_scanner.js":
 			return open("web_document_scanner.js").read()
 		elif path.startswith("scans/"):
+			return open(path).read()
+		elif path.startswith("thumbs/"):
 			return open(path).read()
 		else: return "BAD CALL"
 

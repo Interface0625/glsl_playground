@@ -13,7 +13,7 @@ var View = {
 
 function xhrGet(reqUri, callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", reqUri, true);
+    xhr.open("GET", reqUri, false);
     xhr.onload = callback;
     xhr.send();
 }
@@ -22,10 +22,12 @@ function xhrGet(reqUri, callback) {
 // SCANNER:
 
 var Scanner = {
-	scanGetDelay: 10000,
-	initialScanGetDelay: 5000,
+	scanGetDelay: 1000,
+	initialScanGetDelay: 1000,
 	scan: function(){
+		console.log("GET:http://localhost:8080/scan");
 		xhrGet("http://localhost:8080/scan", function(){
+			console.log(this.responseText);
 			var id = this.responseText;
 			if( id == "busy" ){
 				return "busy";
@@ -39,8 +41,7 @@ var Scanner = {
 		});
 	},
 	requestById: function(id){
-		console.log("ID:" + id);
-
+		console.log("GET:http://localhost:8080/reqScan?"+id);
 		xhrGet("http://localhost:8080/reqScan?"+id, function(){
 			console.log(this.responseText);
 			if(this.responseText == "{}"){ 
@@ -50,8 +51,9 @@ var Scanner = {
 					id); 
 			}else{
 				var scannedImages = JSON.parse(this.responseText);
-				for(var i = 0; i < scannedImages["url"].length;i++){
-					View.addImage(scannedImages["url"][i]);
+				console.log(scannedImages);
+				for(var i = 0; i < scannedImages["urls"].length;i++){
+					View.addImage(scannedImages["urls"][i]);
 				}
 			}
 		});
